@@ -1,0 +1,7 @@
+name = "ContinuedFraction"
+uuid = "99b0b710-c4da-11e8-2609-e1ea9c1de548"
+authors = ["Christopher Waas <43119886+chriswaas@users.noreply.github.com>"]
+version = "0.1.0"
+
+[deps]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
