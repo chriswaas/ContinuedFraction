@@ -1,6 +1,6 @@
 module ContinuedFraction
 
-function evaluate(x::Number, a::Array{Int64,1}, iter::Int64)
+function evaluate(x::Number, a::Array{Int,1}, iter::Int)
     for j = iter-1:-1:1
         x = 1//x+a[j]
     end
@@ -10,10 +10,10 @@ end
 function generate(x::Number, tol::Number)
     counter = 1
     z = 0
-    a = zeros(Int64, 100)
+    a = zeros(Int, 100)
     b = zeros(Number, 100)
     konv = zeros(Rational, 100)
-    a[1] = Int64(floor(x))
+    a[1] = Int(floor(x))
     b[1] = x
     konv[1] = a[1]
     if abs(konv[1]-x)<=tol
@@ -22,11 +22,11 @@ function generate(x::Number, tol::Number)
         for i in 2:length(a)
             try
                 b[i] = 1/(b[i-1]-a[i-1])
-                a[i] = Int64(floor(b[i]))
+                a[i] = Int(floor(b[i]))
                 konv[i] = evaluate(a[i],a,i)
             catch
                 b[i] = 0
-                a[i] = Int64(floor(b[i]))
+                a[i] = Int(floor(b[i]))
                 konv[i] = evaluate(a[i],a,i)
             end
             counter = i

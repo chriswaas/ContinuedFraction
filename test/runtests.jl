@@ -3,9 +3,9 @@ using Test
 
 @testset "Testing rational approximation" begin
 tol = 1e-14
-for i in 1:1000
-  x = rand(-1000000:1000000)
-  y = rand(1:1000000)
+for i in 1:100000
+  x = rand(-10000000:10000000)
+  y = rand(1:10000000)
   z = x//y
   appro = getApproxSeries(z,tol)
   @test abs(z-getApprox(z,tol)) <= tol
