@@ -4,8 +4,8 @@ using Test
 @testset "Testing rational approximation" begin
 tol = 1e-14
 for i in 1:100000
-  x = rand(-10000000:10000000)
-  y = rand(1:10000000)
+  x = rand(-1000000:1000000)
+  y = rand(1:1000000)
   z = x//y
   appro = getApproxSeries(z,tol)
   @test abs(z-getApprox(z,tol)) <= tol
@@ -14,7 +14,7 @@ for i in 1:100000
   end
 end
 
-#testing e and pi
+#testing e and pi, to be perfected
 @test abs(log(getApprox(exp(1),tol))) <= 1.001
 @test abs(cos(getApprox(pi/2, tol))) <= 0.001
 end
