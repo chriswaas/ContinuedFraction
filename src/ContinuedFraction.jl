@@ -1,8 +1,22 @@
 module ContinuedFraction
 #using Plots
-function evaluate(x::Number, a::Array{Int,1}, iter::Int)
+
+#iterativ evaluation
+function evaluate(a::Array{Int,1}, iter::Int)
+    x=a[iter]
     for j = iter-1:-1:1
         x = 1//x+a[j]
+    end
+    return x
+end
+
+#recursive evaluation
+function evaluateRec(a::Array{Int,1}, iter::Int)
+    x=0
+    if iter < length(a)
+        x = a[iter]+(1//evaluateRec(a, iter+1))
+    else
+        x=a[end]
     end
     return x
 end
@@ -10,29 +24,29 @@ end
 function generate(x::Number, tol::Number)
     counter = 1
     z = 0
-    store1 = zeros(Int, 100)
-    store2 = zeros(Number, 100)
-    konv = zeros(Rational, 100)
-    store1[1] = Int(floor(x))
+    store1 = zeros(Int, 100) #stores coefficients
+    store2 = zeros(Number, 100) #stores remaining number of x
+    konv = zeros(Rational, 100) #stores convergents
+    store1[1] = Int(floor(x)) #initialize
     store2[1] = x
     konv[1] = store1[1]
-    if abs(konv[1]-x) <= tol
+    if abs(konv[1]-x) <= tol #if floor of x already approximates good enough, stop here
         z = konv[1]
     else
         for i in 2:length(store1)
             counter = i
-            try
+            try #calculation of the next konvergent
                 store2[i] = 1/(store2[i-1]-store1[i-1])
                 store1[i] = Int(floor(store2[i]))
-                konv[i] = evaluate(store1[i], store1, i)
-                if abs(konv[i]-x) <= tol
+                konv[i] = evaluate(store1, i)
+                if abs(konv[i]-x) <= tol #check if fraction approximates x good enough, then break
                     z = konv[i]
                     break
                 end
             catch #have a feeling that's never gonna happen
                 store2[i] = 0
                 store1[i] = Int(floor(store2[i])) # =0
-                konv[i] = evaluate(store1[i], store1, i)
+                konv[i] = evaluate(store1, i)
                 println("reached deadend")
             end
         end
@@ -40,12 +54,12 @@ function generate(x::Number, tol::Number)
     return z,store1,konv,counter,tol
 end
 
-export getApprox
+export getApprox #returns fraction that approximates x within tol
 function getApprox(x::Number, tol::Number)
     return generate(x,tol)[1]
 end
 
-export getApproxSeries
+export getApproxSeries #returns all convergents & tolerance
 function getApproxSeries(x::Number, tol::Number)
     i = 2
     d = generate(x,tol)[3]
@@ -63,11 +77,26 @@ function getApproxSeries(x::Number, tol::Number)
     return val,tol
 end
 
-export getDeviation
+export getDeviation #returns deviation of each convergent to x
 function getDeviation(x::Number, tol::Number)
     y = getApproxSeries(x,tol)
     println("Needed steps: ", length(y[1]))
     return pl
+end
+
+export getCoeffs #returns coefficients that form the continued fraction
+function getCoeffs(x::Number, tol::Number)
+    i = 2
+    d = generate(x, tol)[2]
+    while d[i] != 0
+        i += 1
+    end
+    val = zeros(Int, i-1)
+    pl = zeros(i-1, 2)
+    for j in 1:i-1
+        val[j] = d[j]
+    end
+    return val
 end
 
 end # module
