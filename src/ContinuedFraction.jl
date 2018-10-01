@@ -1,5 +1,5 @@
 module ContinuedFraction
-using Plots
+#using Plots
 function evaluate(x::Number, a::Array{Int,1}, iter::Int)
     for j = iter-1:-1:1
         x = 1//x+a[j]
@@ -53,18 +53,18 @@ function getApproxSeries(x::Number, tol::Number)
         i += 1
     end
     val = zeros(Rational, i-1)
-    stats = zeros(i-1)
-    global pl = zeros(i-1, 2)
+    global devs = zeros(i-1)
+    pl = zeros(i-1, 2)
     for j in 1:i-1
         val[j] = d[j]
-        stats[j] = x - d[j]
-        pl[j,:] = [j, stats[j]]
+        devs[j] = x - d[j]
+        pl[j,:] = [j, devs[j]]
     end
     return val,tol
 end
 
-export getStatistics
-function getStatistics(x::Number, tol::Number)
+export getDeviation
+function getDeviation(x::Number, tol::Number)
     y = getApproxSeries(x,tol)
     println("Needed steps: ", length(y[1]))
     return pl
