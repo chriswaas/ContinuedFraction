@@ -65,8 +65,8 @@ end
 
 export getStatistics
 function getStatistics(x::Number, tol::Number)
-    z = getApproxSeries(x,tol)
-    println("Needed steps: ", length(z[1]))
+    y = getApproxSeries(x,tol)
+    println("Needed steps: ", length(y[1]))
     return pl
 end
 
