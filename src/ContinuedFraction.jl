@@ -13,7 +13,7 @@ end
 #recursive evaluation
 function evaluateRec(a::Array{Int,1}, iter::Int)
     x=0
-    if iter < length(a)
+    if (iter < length(a) && a[iter] != 0) || iter==1
         x = a[iter]+(1//evaluateRec(a, iter+1))
     else
         x=a[end]
@@ -21,9 +21,28 @@ function evaluateRec(a::Array{Int,1}, iter::Int)
     return x
 end
 
+function shorten(d::Array)
+    i = 2
+    while d[i] != 0
+        i += 1
+    end
+    t = zeros(eltype(d), i-1)
+    for j in 1:i-1
+        t[j] = d[j]
+    end
+    return t
+end
+
+export ConFrac
+struct ConFrac{Rational}
+    value::Rational
+end
+
+############################################################
+
 function generate(x::Number, tol::Number)
     counter = 1
-    z = 0
+    z = ConFrac(0)
     store1 = zeros(Int, 100) #stores coefficients
     store2 = zeros(Number, 100) #stores remaining number of x
     konv = zeros(Rational, 100) #stores convergents
@@ -31,16 +50,16 @@ function generate(x::Number, tol::Number)
     store2[1] = x
     konv[1] = store1[1]
     if abs(konv[1]-x) <= tol #if floor of x already approximates good enough, stop here
-        z = konv[1]
+        z = ConFrac(konv[1])
     else
         for i in 2:length(store1)
             counter = i
             try #calculation of the next konvergent
                 store2[i] = 1/(store2[i-1]-store1[i-1])
                 store1[i] = Int(floor(store2[i]))
-                konv[i] = evaluate(store1, i)
+                konv[i] = evaluate(store1, i) #evaluateRec(shorten(store1), 1) also works but I think it's slower
                 if abs(konv[i]-x) <= tol #check if fraction approximates x good enough, then break
-                    z = konv[i]
+                    z = ConFrac(konv[i])
                     break
                 end
             catch #have a feeling that's never gonna happen
@@ -57,6 +76,15 @@ end
 export getApprox #returns fraction that approximates x within tol
 function getApprox(x::Number, tol::Number)
     return generate(x,tol)[1]
+end
+
+export getValue
+function getValue(x::Number, tol::Number)
+    return generate(x,tol)[1].value
+end
+
+function getValue(x::ConFrac)
+    return x.value
 end
 
 export getApproxSeries #returns all convergents & tolerance
@@ -97,6 +125,24 @@ function getCoeffs(x::Number, tol::Number)
         val[j] = d[j]
     end
     return val
+end
+
+#############################################################
+
+function Base. +(x::ConFrac, y::ConFrac)
+    return ConFrac(x.value+y.value)
+end
+
+function Base. -(x::ConFrac, y::ConFrac)
+    return ConFrac(x.value-y.value)
+end
+
+function Base. *(x::ConFrac, y::ConFrac)
+    return ConFrac(x.value*y.value)
+end
+
+function Base. /(x::ConFrac, y::ConFrac)
+    return ConFrac(x.value/y.value)
 end
 
 end # module
