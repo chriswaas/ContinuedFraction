@@ -33,16 +33,11 @@ function shorten(d::Array)
     return t
 end
 
-export ConFrac
-struct ConFrac{Rational}
-    value::Rational
-end
-
 ############################################################
 
 function generate(x::Number, tol::Number)
     counter = 1
-    z = ConFrac(0)
+    #z = 0
     store1 = zeros(Int, 100) #stores coefficients
     store2 = zeros(Number, 100) #stores remaining number of x
     konv = zeros(Rational, 100) #stores convergents
@@ -50,7 +45,7 @@ function generate(x::Number, tol::Number)
     store2[1] = x
     konv[1] = store1[1]
     if abs(konv[1]-x) <= tol #if floor of x already approximates good enough, stop here
-        z = ConFrac(konv[1])
+        z = konv[1]
     else
         for i in 2:length(store1)
             counter = i
@@ -59,15 +54,13 @@ function generate(x::Number, tol::Number)
                 store1[i] = Int(floor(store2[i]))
                 konv[i] = evaluate(store1, i) #evaluateRec(shorten(store1), 1) also works but I think it's slower
                 if abs(konv[i]-x) <= tol #check if fraction approximates x good enough, then break
-                    z = ConFrac(konv[i])
+                    z = konv[i]
                     break
                 end
-            catch #have a feeling that's never gonna happen
-                store2[i] = 0
-                store1[i] = Int(floor(store2[i])) # =0
-                konv[i] = evaluate(store1, i)
-                println("reached deadend")
+            catch
+                break
             end
+            #println(store1[i],store2[i]) #debug
         end
     end
     return z,store1,konv,counter,tol
@@ -76,15 +69,6 @@ end
 export getApprox #returns fraction that approximates x within tol
 function getApprox(x::Number, tol::Number)
     return generate(x,tol)[1]
-end
-
-export getValue
-function getValue(x::Number, tol::Number)
-    return generate(x,tol)[1].value
-end
-
-function getValue(x::ConFrac)
-    return x.value
 end
 
 export getApproxSeries #returns all convergents & tolerance
@@ -125,24 +109,6 @@ function getCoeffs(x::Number, tol::Number)
         val[j] = d[j]
     end
     return val
-end
-
-#############################################################
-
-function Base. +(x::ConFrac, y::ConFrac)
-    return ConFrac(x.value+y.value)
-end
-
-function Base. -(x::ConFrac, y::ConFrac)
-    return ConFrac(x.value-y.value)
-end
-
-function Base. *(x::ConFrac, y::ConFrac)
-    return ConFrac(x.value*y.value)
-end
-
-function Base. /(x::ConFrac, y::ConFrac)
-    return ConFrac(x.value/y.value)
 end
 
 end # module
