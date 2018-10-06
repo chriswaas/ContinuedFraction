@@ -50,11 +50,16 @@ function generate(x::Number, tol::Number)
         for i in 2:length(store1)
             counter = i
             try #calculation of the next konvergent
-                store2[i] = 1/(store2[i-1]-store1[i-1])
-                store1[i] = Int(floor(store2[i]))
-                konv[i] = evaluate(store1, i) #evaluateRec(shorten(store1), 1) also works but I think it's slower
-                if abs(konv[i]-x) <= tol #check if fraction approximates x good enough, then break
-                    z = konv[i]
+                dif = (store2[i-1]-store1[i-1])
+                if dif != 0
+                    store2[i] = 1/dif
+                    store1[i] = Int(floor(store2[i]))
+                    konv[i] = evaluate(store1, i) #evaluateRec(shorten(store1), 1) also works but I think it's slower
+                    if abs(konv[i]-x) <= tol #check if fraction approximates x good enough, then break
+                        z = konv[i]
+                        break
+                    end
+                else
                     break
                 end
             catch
