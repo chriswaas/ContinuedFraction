@@ -110,4 +110,9 @@ function getCoeffs(x::Number, tol::Number)
     return val
 end
 
+export getDiff #returns absolute value of difference from approximation x to value y
+function getDiff(x::Rational, y::Number)
+    return abs(x-y)
+end
+
 end # module
