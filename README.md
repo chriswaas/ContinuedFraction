@@ -3,16 +3,16 @@
 This is my final project. It is a program to approximate any number with a rational number.
 
 ## Status
-Test status: [![Build status](https://ci.appveyor.com/api/projects/status/800j6pis84wjfggo?svg=true)](https://ci.appveyor.com/project/chriswaas/continuedfraction)
+Status: [![Build status](https://ci.appveyor.com/api/projects/status/800j6pis84wjfggo?svg=true)](https://ci.appveyor.com/project/chriswaas/continuedfraction)
 
-At the moment, there are still issues with 32-bit systems because the tests exceed the Int32 range.
+At the moment, there are still issues with 32-bit systems because the tests exceed the Int32 range. This happens during the simplifying the fraction.
 
 ## Description
 **Any** function takes any real numbers as input in combination with a tolerance. There are different functions available:
-* **approximate(x::Number, tol::Number)**: returns rational output that approximates *x* within a tolerance of *tol*
-* **approximateSeries(x::Number, tol::Number)**: returns an array of rationals (*convergents*) that shows the chronological order of fractions that were used to approximate *x* within *tol*
-* **getDeviation(x::Number, tol::Number)** returns an array with the deviations from each convergent to *x*
-* **getCoeffs(x::Number, tol::Number)** returns coefficients with which the continued fraction was built (according to the formalism shown in the Wikipedia article)
+* **approximate(x::Real, tol::Real)**: returns rational output that approximates *x* within a tolerance of *tol*
+* **approximateSeries(x::Real, tol::Real)**: returns an array of rationals (*convergents*) that shows the chronological order of fractions that were used to approximate *x* within *tol*
+* **getDeviation(x::Real, tol::Real)** returns an array with the deviations from each convergent to *x*
+* **getCoeffs(x::Real, tol::Real)** returns coefficients with which the continued fraction was built (according to the formalism shown in the Wikipedia article)
 
 Remember that 0 precision actually just is precise up to 1e-16.
 
