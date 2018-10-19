@@ -35,10 +35,10 @@ end
 
 ############################################################
 
-function generate(x::Number, tol::Number)
+function generate(x::Real, tol::Real)
     counter = 1
     store1 = zeros(Int, 100) #stores coefficients
-    store2 = zeros(Number, 100) #stores remaining part of x
+    store2 = zeros(Real, 100) #stores remaining part of x
     konv = zeros(Rational, 100) #stores convergents
     store1[1] = Int(floor(x)) #initialize
     store2[1] = x
@@ -66,12 +66,12 @@ function generate(x::Number, tol::Number)
 end
 
 export approximate #returns fraction that approximates x within tol
-function approximate(x::Number, tol::Number)
+function approximate(x::Real, tol::Real)
     return generate(x,tol)[1]
 end
 
 export approximateSeries #returns all convergents & tolerance
-function approximateSeries(x::Number, tol::Number)
+function approximateSeries(x::Real, tol::Real)
     i = 2
     d = generate(x,tol)[3]
     while d[i] != 0
@@ -89,14 +89,14 @@ function approximateSeries(x::Number, tol::Number)
 end
 
 export getDeviation #returns deviation of each convergent to x
-function getDeviation(x::Number, tol::Number)
+function getDeviation(x::Real, tol::Real)
     y = approximateSeries(x,tol)
     println("Needed steps: ", length(y[1]))
     return pl
 end
 
 export getCoeffs #returns coefficients that form the continued fraction
-function getCoeffs(x::Number, tol::Number)
+function getCoeffs(x::Real, tol::Real)
     i = 2
     d = generate(x, tol)[2]
     while d[i] != 0
@@ -111,7 +111,7 @@ function getCoeffs(x::Number, tol::Number)
 end
 
 export getDiff #returns absolute value of difference from approximation x to value y
-function getDiff(x::Rational, y::Number)
+function getDiff(x::Rational, y::Real)
     return abs(x-y)
 end
 
